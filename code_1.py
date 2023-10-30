@@ -86,6 +86,40 @@ profile.grid(row = 0, column = 3, padx = 10, pady = 10)
 
 
 
+
+#value
+
+low_entry=tkinter.Entry()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #Profile Menu
 l_username = Label(profilePage, text = "Bobson6464", font = ("Arial", 25))
 l_username.grid(row = 0, column = 3, padx = 10, pady = 10)
