@@ -50,6 +50,41 @@ def openFolder():
 def doNothing():
     x=1
 
+def setLimit():
+    global low
+    global middle
+    global high
+    global correctvalues #bool
+    try:
+       
+
+        low=int(low_entry.get())
+        middle=int(middle_entry.get())
+        high=int(high_entry.get())
+
+        print(str(low)+"\n"+str(middle)+"\n"+str(high))
+    except:
+        print("no")
+        low_entry.delete(0, tk.END)
+        middle_entry.delete(0, tk.END)
+        high_entry.delete(0, tk.END)
+        error_label=tk.Label(mainScreen, text="must be numbers")
+        error_label.grid(row=2,column=5)
+    else:
+        if low<middle and middle<high:
+            correctvalues=True
+            error_label.delete()
+        else:
+            low_entry.delete(0, tk.END)
+            middle_entry.delete(0, tk.END)
+            high_entry.delete(0, tk.END)
+            error_label=tk.Label(mainScreen, text="numbers must make sense")
+            error_label.grid(row=2,column=5)
+        
+        
+
+
+    
 
 
 # create a tkinter window
@@ -88,9 +123,26 @@ profile.grid(row = 0, column = 3, padx = 10, pady = 10)
 
 
 #value
+low_label=tk.Label(mainScreen, text = "Highest BPM for low:")
+low_label.grid(row=3,column=3)
+low_entry=tk.Entry(mainScreen)
+low_entry.grid(row=3,column=4)
 
-low_entry=tkinter.Entry()
+middle_label=tk.Label(mainScreen, text = "Highest BPM for medium:")
+middle_label.grid(row=3,column=5)
+middle_entry=tk.Entry(mainScreen)
+middle_entry.grid(row=3,column=6)
 
+high_label=tk.Label(mainScreen, text = "Lowest BPM for high:")
+high_label.grid(row=3,column=7)
+high_entry=tk.Entry(mainScreen)
+high_entry.grid(row=3,column=8)
+
+
+
+
+setLimit = tk.Button(mainScreen, text="set thresholds", command=setLimit)
+setLimit.grid(row=4,column=5)
 
 
 
