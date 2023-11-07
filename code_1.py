@@ -3,6 +3,13 @@
 #https://dev.to/highcenburg/getting-the-tempo-of-a-song-using-librosa-4e5b
 #https://www.youtube.com/watch?v=reJ8kTqQsTY 5:18
 
+#mutagen library
+'''
+Goal: The program should not compile everytime a new song is added to the folder.
+Instead, the songs that have already been analysed should have their data saved somewhere and the program only analyzes the new files.
+
+
+'''
 import tkinter as tk
 from tkinter import * 
 from tkinter.ttk import *
@@ -170,10 +177,11 @@ setLimit.grid(row=4,column=4)
 
 
 #displaying files on screen
-'''listOfFiles=Text(mainScreen, height = 20, width = 50)
+#listOfFiles=Text(mainScreen, height = 20, width = 50)
+listOfFiles=Label(mainScreen, text=songs)
 listOfFiles.grid(row=6, column=1, columnspan=5, pady=30)
-listOfFiles.insert(tk.END, "Songs in the folder: "+ songs)
-listOfFiles.config(state=DISABLED)'''
+#listOfFiles.insert(tk.END, "Songs in the folder: "+ songs)
+#listOfFiles.config(state=DISABLED)
 
 
 #analyze bpm
