@@ -9,8 +9,9 @@ from tkinter.ttk import *
 from tkinter import filedialog
 import os
 import librosa
-
+import sqlite3
 from pathlib import Path
+import subprocess
 #initialize some variables
 text1 = "Folder Path: ";
 songs = ""
@@ -80,13 +81,13 @@ def setLimit():
         high_entry.delete(0, tk.END)
         
         error_label=tk.Label(mainScreen, text="must be numbers")
-        error_label.grid(row=2+1,column=5)
+        error_label.grid(row=2+3,column=5)
     else:
         if low<middle and middle<high:
             correctvalues=True
             
             error_label= tk.Label(mainScreen, text="Values Set!")
-            error_label.grid(row=2+1,column=5)
+            error_label.grid(row=2+3,column=5)
             print("c")
         else:
             low_entry.delete(0, tk.END)
@@ -98,6 +99,7 @@ def setLimit():
         
 
 def sort():
+    global td;
     for td in filelist:
         y, sr = librosa.load(td)
         tempo, beat_frames = librosa.beat.beat_track(y=y, sr=sr)
@@ -111,6 +113,8 @@ def sort():
                 print( "Hign Bpm")
 
 
+def openInSystem():
+    subprocess.Popen(td)
     
 
 
@@ -131,8 +135,8 @@ mainScreen.grid(row=0, column=0)
 profilePage.grid(row=0, column=0)
 
 #Main Menu Widgets
-new_folder = Button(mainScreen, text = 'New Folder', command = doNothing)
-import_folder = Button(mainScreen, text = "Import Folder", command = openFolder)
+newFolder_button = Button(mainScreen, text = 'New Folder', command = doNothing)
+importFolder_button = Button(mainScreen, text = "Import Folder", command = openFolder)
 
 
 
@@ -142,8 +146,8 @@ print("testing", text1)
 
 
 
-new_folder.grid(row = 1, column = 1, padx = 10, pady = 10)
-import_folder.grid(row = 1, column = 2, padx = 10, pady = 10)
+newFolder_button.grid(row = 1, column = 1, padx = 10, pady = 10)
+importFolder_button.grid(row = 1, column = 2, padx = 10, pady = 10)
 profile.grid(row = 0, column = 3, padx = 10, pady = 10)
 
 
@@ -151,22 +155,22 @@ profile.grid(row = 0, column = 3, padx = 10, pady = 10)
 
 #value
 low_label=tk.Label(mainScreen, text = "Highest BPM for low:")
-low_label.grid(row=3+1,column=3)
+low_label.grid(row=3+3,column=3)
 low_entry=tk.Entry(mainScreen)
-low_entry.grid(row=4+1,column=3)
+low_entry.grid(row=4+3,column=3)
 
 middle_label=tk.Label(mainScreen, text = "Highest BPM for medium:")
-middle_label.grid(row=5+1,column=3)
+middle_label.grid(row=5+3,column=3)
 middle_entry=tk.Entry(mainScreen)
-middle_entry.grid(row=6+1,column=3)
+middle_entry.grid(row=6+3,column=3)
 
 high_label=tk.Label(mainScreen, text = "Lowest BPM for high:")
-high_label.grid(row=7+1,column=3)
+high_label.grid(row=7+3,column=3)
 high_entry=tk.Entry(mainScreen)
-high_entry.grid(row=8+1,column=3)
+high_entry.grid(row=8+3,column=3)
 
 setLimit = tk.Button(mainScreen, text="set thresholds", command=setLimit)
-setLimit.grid(row=4+1,column=4)
+setLimit.grid(row=4+3,column=4)
 
 
 #displaying files on screen
@@ -179,10 +183,11 @@ listOfFiles.config(state=DISABLED)'''
 #analyze bpm
 
 analyze_button = tk.Button(mainScreen,text="Analyze分析", command=sort)
-analyze_button.grid(row=10+1,column=3)
+analyze_button.grid(row=10+3,column=3)
 
 
-
+openInSystem_button = tk.Button(mainScreen, text="Open in Filesystem", command=openInSystem)
+openInSystem_button.grid(row=1,column=3)
 
 
 
