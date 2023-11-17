@@ -22,14 +22,14 @@ filelist=list();
 conn = sqlite3.connect("songs.db")
 c = conn.cursor()
 
-c.execute("""CREATE TABLE songs(
+'''c.execute("""CREATE TABLE songs(
         song_name   text,
         bpm         real, 
         
-)""")
+        
+)""")'''
 
-conn.commit()
-conn.close()
+
 
 def openFolder():
     global currentDirectory;
@@ -252,4 +252,5 @@ root.title("DJTool")
 root.resizable(False, False)
 root.mainloop()
 
-
+conn.commit()
+conn.close()
