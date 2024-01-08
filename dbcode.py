@@ -2,6 +2,7 @@
 #https://www.youtube.com/watch?v=qw_XHRJP-vc 8:25
 #https://dev.to/highcenburg/getting-the-tempo-of-a-song-using-librosa-4e5b
 #https://www.youtube.com/watch?v=reJ8kTqQsTY 5:18
+#https://www.sqlitetutorial.net/sqlite-python/creating-database/
 
 import tkinter as tk
 from tkinter import * 
@@ -13,7 +14,7 @@ import sqlite3
 from pathlib import Path
 import subprocess
 #initialize some variables
-text1 = "Folder Path: ";
+text1 = "Folder Path: "
 songs = ""
 
 filelist=list();
@@ -22,7 +23,7 @@ filelist=list();
 conn = sqlite3.connect("songs.db")
 c = conn.cursor()
 
-'''c.execute("""CREATE TABLE songs(
+'''c.execute("""CREATE TABLE IF NOT EXIST songs(
         song_name   text,
         bpm         real, 
         
