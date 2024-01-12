@@ -42,20 +42,26 @@ def openFolder():
     
     
     currentDirectory = filedialog.askdirectory()
+    #normalize "'/'/'\'" usage
+    currentDirectory = os.path.normpath(currentDirectory)
     
     for td in Path(currentDirectory).iterdir():
         
-        stringtd=str(td)
+        stringtd=os.path.normpath(str(td))
+        
         #to get rid of the directory before the file
         stringtd=stringtd.replace(str(currentDirectory), "")
+        
+        #print(currentDirectory)
 
         if str(td)[-3:]=="wav" or str(td)[-3:]=="mp3":
-            filelist.append(td);
-        print(stringtd);
-        if len(stringtd)>50:
+            filelist.append(td)
+        print(stringtd)
+        
+        '''if len(stringtd)>50:
             stringtd=stringtd[0:47]+"..."
-        songs = songs + str(stringtd) + "\n"
-    print(songs)
+        songs = songs + str(stringtd) + "\n"'''
+    #print(songs)
 
     '''listOfFiles=Text(mainScreen, height = 500, width = 400)
     listOfFiles.grid(row=6, column=1, columnspan=5)
