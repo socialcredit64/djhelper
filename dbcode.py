@@ -23,12 +23,11 @@ filelist=list();
 conn = sqlite3.connect("songs.db")
 c = conn.cursor()
 
-'''c.execute("""CREATE TABLE IF NOT EXIST songs(
-        song_name   text,
-        bpm         real, 
-        
-        
-)""")'''
+
+c.execute("""CREATE TABLE IF NOT EXISTS songs(
+        song_name   TEXT,
+        bpm         REAL
+)""")
 
 
 
@@ -43,7 +42,7 @@ def openFolder():
     
     currentDirectory = filedialog.askdirectory()
     #normalize "'/'/'\'" usage
-    currentDirectory = os.path.normpath(currentDirectory)
+    currentDirectory = os.path.normpath(currentDirectory)+"\\"
     
     for td in Path(currentDirectory).iterdir():
         
