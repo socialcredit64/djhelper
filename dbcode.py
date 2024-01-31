@@ -122,14 +122,19 @@ def sort():
     for td in filelist:
         y, sr = librosa.load(td)
         tempo, beat_frames = librosa.beat.beat_track(y=y, sr=sr)
-        print("Songname: "+str(td)+", Tempo: {:.2f}".format(tempo)) 
+        print("Songname: "+str(stringtd)+", Tempo: {:.2f}".format(tempo)) 
+        song_data = (stringtd, int(tempo))
+        c.execute("INSERT INTO songs (song_name, bpm) VALUES (?, ?)", song_data)
+        if correctvalues is None:
+
         if correctvalues==True:
             if tempo<low:
                 print( "Low Bpm")
             if tempo>low and tempo<middle:
                 print(" Middle Bpm")
             if tempo>high:
-                print( "Hign Bpm")
+                print( "High Bpm")
+        
 
 
 def openInSystem():
@@ -201,7 +206,7 @@ listOfFiles.config(state=DISABLED)'''
 
 #analyze bpm
 
-analyze_button = tk.Button(mainScreen,text="Analyze分析", command=sort)
+analyze_button = tk.Button(mainScreen,text="分析", command=sort)
 analyze_button.grid(row=10+3,column=3)
 
 
