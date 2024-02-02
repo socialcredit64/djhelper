@@ -125,8 +125,9 @@ def sort():
         print("Songname: "+str(stringtd)+", Tempo: {:.2f}".format(tempo)) 
         song_data = (stringtd, int(tempo))
         c.execute("INSERT INTO songs (song_name, bpm) VALUES (?, ?)", song_data)
+        #if the correct values arent given then the bpm cannot be categorized
         if correctvalues is None:
-
+            break
         if correctvalues==True:
             if tempo<low:
                 print( "Low Bpm")
