@@ -29,14 +29,19 @@ c.execute("""CREATE TABLE IF NOT EXISTS songs(
         bpm         REAL
 )""")
 
+def openFile():
+    global currentDirectory
 
+
+    currentDirectory = filedialog.askdirectory()
+    currentDirectory = os.path.normpath(currentDirectory)+"\\"
 
 def openFolder():
-    global currentDirectory;
-    global text1;
-    global listOfFiles;
-    global songs;
-    global stringtd;
+    global currentDirectory
+    global text1
+    global listOfFiles
+    global songs
+    global stringtd
     global filelist
     
     
@@ -160,7 +165,7 @@ mainScreen.grid(row=0, column=0)
 profilePage.grid(row=0, column=0)
 
 #Main Menu Widgets
-newFolder_button = Button(mainScreen, text = 'New Folder', command = doNothing)
+newFolder_button = Button(mainScreen, text = 'Import File', command = openFile)
 importFolder_button = Button(mainScreen, text = "Import Folder", command = openFolder)
 
 
