@@ -1,8 +1,10 @@
-#task: figure out how to switch between pages
 #https://www.youtube.com/watch?v=qw_XHRJP-vc 8:25
 #https://dev.to/highcenburg/getting-the-tempo-of-a-song-using-librosa-4e5b
 #https://www.youtube.com/watch?v=reJ8kTqQsTY 5:18
 #https://www.sqlitetutorial.net/sqlite-python/creating-database/
+#https://docs.python.org/3/library/dialog.html#tkinter.filedialog.askopenfile
+
+#how to print contents of a database in sqlite?
 
 import tkinter as tk
 from tkinter import * 
@@ -16,8 +18,9 @@ import subprocess
 #initialize some variables
 text1 = "Folder Path: "
 songs = ""
+type = "folder/file"
 
-filelist=list();
+filelist=list()
 
 # A database using sqlite
 conn = sqlite3.connect("songs.db")
@@ -31,22 +34,48 @@ c.execute("""CREATE TABLE IF NOT EXISTS songs(
 
 def openFile():
     global currentDirectory
+    global type
+    global currentRawPath
+    global folderPath
+    global stringtd
 
 
-    currentDirectory = filedialog.askdirectory()
-    currentDirectory = os.path.normpath(currentDirectory)+"\\"
+    type = "file"
+
+    currentDirectory = filedialog.askopenfilename(initialdir="/", title="Select File", filetypes=(("Wave files", "*.wav"), ("MP3 files", "*.mp3")))
+    folderPath = os.path.dirname(currentDirectory)
+    currentRawPath = currentDirectory
+    folderPath = os.path.normpath(folderPath)
+    
+    displayDirectory = Label(mainScreen, text = text1+currentDirectory)
+    displayDirectory.grid(row=2 , column=1, columnspan=5)
+
+    stringtd=os.path.normpath(str(currentDirectory))
+    #to get rid of the directory before the file
+    stringtd=stringtd.replace(str(folderPath)+"\\", "")
+    print("stringtd:",stringtd)
+    print("currentdirectory:",currentDirectory)
+    print("folder:",folderPath)
+
+    '''folderPath is the path of the folder to the file. stringtd is going to be the song name without path marks. currentDirectory is the path to the file'''
+
+
 
 def openFolder():
+    
+
+    #a variable that is not a parameter for the function must be written like this to be accessed by it.
     global currentDirectory
     global text1
     global listOfFiles
     global songs
     global stringtd
     global filelist
-    
-    
+    global type
+
+    type = "folder"
     currentDirectory = filedialog.askdirectory()
-    #normalize "'/'/'\'" usage
+    #turn \ to /
     currentDirectory = os.path.normpath(currentDirectory)+"\\"
     
     for td in Path(currentDirectory).iterdir():
@@ -87,27 +116,24 @@ def doNothing():
 
 def setLimit():
     global low
-    global middle
     global high
     global correctvalues #bool
     try:
        
 
         low=int(low_entry.get())
-        middle=int(middle_entry.get())
         high=int(high_entry.get())
 
-        print(str(low)+"\n"+str(middle)+"\n"+str(high))
+        print(str(low)+"\n"+str(high))
     except:
         print("no")
         low_entry.delete(0, tk.END)
-        middle_entry.delete(0, tk.END)
         high_entry.delete(0, tk.END)
         
         error_label=tk.Label(mainScreen, text="must be numbers")
         error_label.grid(row=2+3,column=5)
     else:
-        if low<middle and middle<high:
+        if low<high:
             correctvalues=True
             
             error_label= tk.Label(mainScreen, text="Values Set!")
@@ -115,7 +141,6 @@ def setLimit():
             print("c")
         else:
             low_entry.delete(0, tk.END)
-            middle_entry.delete(0, tk.END)
             high_entry.delete(0, tk.END)
             
             error_label=tk.Label(mainScreen, text="numbers must make sense")
@@ -123,28 +148,48 @@ def setLimit():
         
 
 def sort():
-    global td;
-    for td in filelist:
-        y, sr = librosa.load(td)
+    global stringtd
+
+    if type=="folder":
+        for td in filelist:
+            y, sr = librosa.load(td)
+            tempo, beat_frames = librosa.beat.beat_track(y=y, sr=sr)
+
+            #display the song name and BPM on screen
+
+            stringtd=os.path.normpath(str(td))
+            stringtd=stringtd.replace(str(currentDirectory), "")
+
+            print("Songname: "+str(stringtd)+", Tempo: {:.2f}".format(tempo)) 
+            song_data = (stringtd, int(tempo))
+            c.execute("INSERT INTO songs (song_name, bpm) VALUES (?, ?)", song_data)
+            #if the correct values arent given then the bpm cannot be categorized
+            if correctvalues is None:
+                break
+            if correctvalues==True:
+                if tempo<low:
+                    print( "Low Bpm")
+                if tempo>high:
+                    print( "High Bpm")
+
+
+
+    if type=="file":
+        y, sr = librosa.load(currentRawPath)
         tempo, beat_frames = librosa.beat.beat_track(y=y, sr=sr)
-        print("Songname: "+str(stringtd)+", Tempo: {:.2f}".format(tempo)) 
+        print("Songname: "+str(stringtd)+", Tempo: {:.2f}".format(tempo))
         song_data = (stringtd, int(tempo))
         c.execute("INSERT INTO songs (song_name, bpm) VALUES (?, ?)", song_data)
-        #if the correct values arent given then the bpm cannot be categorized
-        if correctvalues is None:
-            break
+        #if the correct values arent given then the bpm cannot be categorized  
         if correctvalues==True:
             if tempo<low:
                 print( "Low Bpm")
-            if tempo>low and tempo<middle:
-                print(" Middle Bpm")
             if tempo>high:
                 print( "High Bpm")
-        
 
 
-def openInSystem():
-    subprocess.Popen(td)
+
+
     
 
 
@@ -170,15 +215,14 @@ importFolder_button = Button(mainScreen, text = "Import Folder", command = openF
 
 
 
-profile = Button(mainScreen, text = "Profile", command = lambda: profilePage.lift())
-print("testing", text1)
+
 # Display directory label
 
 
 
 newFolder_button.grid(row = 1, column = 1, padx = 10, pady = 10)
 importFolder_button.grid(row = 1, column = 2, padx = 10, pady = 10)
-profile.grid(row = 0, column = 3, padx = 10, pady = 10)
+
 
 
 
@@ -189,10 +233,7 @@ low_label.grid(row=3+3,column=3)
 low_entry=tk.Entry(mainScreen)
 low_entry.grid(row=4+3,column=3)
 
-middle_label=tk.Label(mainScreen, text = "Highest BPM for medium:")
-middle_label.grid(row=5+3,column=3)
-middle_entry=tk.Entry(mainScreen)
-middle_entry.grid(row=6+3,column=3)
+
 
 high_label=tk.Label(mainScreen, text = "Lowest BPM for high:")
 high_label.grid(row=7+3,column=3)
@@ -216,8 +257,7 @@ analyze_button = tk.Button(mainScreen,text="分析", command=sort)
 analyze_button.grid(row=10+3,column=3)
 
 
-openInSystem_button = tk.Button(mainScreen, text="Open in Filesystem", command=openInSystem)
-openInSystem_button.grid(row=1,column=3)
+
 
 
 
@@ -248,22 +288,10 @@ l_username = Label(profilePage, text = "Bobson6464", font = ("Arial", 25))
 l_username.grid(row = 0, column = 3, padx = 10, pady = 10)
 
 
-'''#calling opening filesystem code 
-button = Button(text="Open",command=openFile())
-button.pack()'''
 
 
-'''# Directory
-directory = "test"
-  
-# Parent Directory path
-parent_dir = "C:/"
 
-# Path
-path = os.path.join(parent_dir, directory)
 
-os.mkdir(path)
-print("Directory '% s' created" % directory) '''
 
 root.title("DJTool")
 root.resizable(False, False)
