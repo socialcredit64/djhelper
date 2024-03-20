@@ -105,16 +105,17 @@ def openFolder():
     
     for td in Path(currentDirectory).iterdir():
         
-        stringtd=os.path.normpath(str(td))
         
-        #to get rid of the directory before the file
-        stringtd=stringtd.replace(str(currentDirectory), "")
         
-        #print(currentDirectory)
 
 
         #checking for right file type
         if str(td)[-3:]=="wav" or str(td)[-3:]=="mp3":
+
+            stringtd=os.path.normpath(str(td))
+        
+            #to get rid of the directory before the file
+            stringtd=stringtd.replace(str(currentDirectory), "")
             
             #adding the song name to display screen, but not too long
             
@@ -123,8 +124,9 @@ def openFolder():
             
             filelist.append(stringtd)
 
-            print(stringtd)
+            print("openFolder()",stringtd)
     
+    #wrote this at a later time, didnt write this line in the for loop above to maintain readability
     for item in filelist:
         songdisplay=songdisplay+item+"\n"+"\n"
         
@@ -297,7 +299,9 @@ def sort():
             c.execute("INSERT INTO songs (song_name, bpm) VALUES (?, ?)", song_data)
             
 
-            
+def showSystem():
+    dirpath = filedialog.askdirectory(initialdir=currentDirectory)
+
             
 
 
@@ -325,6 +329,7 @@ profilePage.grid(row=0, column=0)
 #Main Menu Widgets
 newFolder_button = Button(mainScreen, text = 'Import File', command = openFile)
 importFolder_button = Button(mainScreen, text = "Import Folder", command = openFolder)
+showInSystem_button = Button(mainScreen, text = "Show in FileSystem", command = showSystem)
 
 #display song data
 
@@ -341,6 +346,8 @@ listOfFiles.place(x=500,y=130)
 
 newFolder_button.grid(row = 1, column = 1, padx = 10, pady = 10)
 importFolder_button.grid(row = 1, column = 2, padx = 10, pady = 10)
+showInSystem_button.grid(row = 1, column = 3, padx = 10, pady = 10)
+
 
 
 
